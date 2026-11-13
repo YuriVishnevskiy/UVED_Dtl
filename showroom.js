@@ -175,13 +175,13 @@ function createViewer(host, gltf, callbacks, options) {
 
   const pedestal = new THREE.Mesh(
     new THREE.CylinderGeometry(2.95, 3.04, 0.18, 128),
-    new THREE.MeshStandardMaterial({color:0x15171a, metalness:0.12, roughness:0.72})
+    new THREE.MeshStandardMaterial({color:0x65706d, metalness:0.12, roughness:0.72})
   );
   pedestal.position.y = -0.092;
   scene.add(pedestal);
   const rim = new THREE.Mesh(
     new THREE.TorusGeometry(2.955, 0.013, 8, 128),
-    new THREE.MeshStandardMaterial({color:0x545860, metalness:0.56, roughness:0.44})
+    new THREE.MeshStandardMaterial({color:0xb7ced5, metalness:0.56, roughness:0.44})
   );
   rim.rotation.x = Math.PI / 2;
   rim.position.y = -0.035;
@@ -253,6 +253,13 @@ function createViewer(host, gltf, callbacks, options) {
   let pointer;
   let hover;
   let chosen = new Set();
+  const transitions = new Map();
+  const finish = {
+    clear: [0x9aa7b5,.27,.88], color:[0x446b82,.32,.70],
+    matte:[0x9aa7b5,.76,.08], satin:[0x9aa7b5,.48,.38]
+  }[options.finish] ?? [0x9aa7b5,.34,.78];
+  const finishColor = new THREE.Color(finish[0]);
+  let finishStart = options.finish ? performance.now() : null;
   let raf = 0;
   let lastTime = 0;
   const controller = new AbortController();
@@ -276,26 +283,41 @@ function createViewer(host, gltf, callbacks, options) {
     lastTime = time;
     angle += (target - angle) * (reducedMotion.matches ? 1 : 1 - Math.exp(-elapsed / 65));
     turntable.rotation.y = angle;
+    const still = reducedMotion.matches;
+    if (finishStart !== null) {
+      const progress = still ? 1 : THREE.MathUtils.clamp((time - finishStart) / 720, 0, 1);
+      const ease = 1 - (1 - progress) ** 3;
+      for (const material of [paint, genericPaint]) {
+        material.color.setHex(0x9aa7b5).lerp(finishColor, ease);
+        material.roughness = THREE.MathUtils.lerp(.34, finish[1], ease);
+        material.clearcoat = THREE.MathUtils.lerp(.78, finish[2], ease);
+      }
+      if (progress === 1) finishStart = null;
+    }
+    highlightPanels(time);
     renderer.render(scene,camera);
-    if (Math.abs(target - angle) > 0.001) schedule();
+    if (Math.abs(target - angle) > 0.001 || transitions.size || finishStart !== null) schedule();
   }
-  function highlightPanels() {
-    zones.forEach((id,i) => {
-      const selected = chosen.has(id) || (id.startsWith('cup') && chosen.has('cups')) ||
-        (id.startsWith('mirror') && chosen.has('mirrors'));
-      highlight.value[i + 1] = selected ? 0.28 : hover === id ? 0.16 : 0;
-    });
-    fleetZones.forEach((id,i) => {
-      fleetHighlight.value[i+1] = chosen.has(id) || (id.startsWith('mirror') && chosen.has('mirrors')) ? .46 : hover===id ? .20 : 0;
-    });
+  function highlightPanels(time) {
+    const still = reducedMotion.matches;
+    const strengths = new Map();
+    for (const [id, change] of transitions) {
+      const progress = still ? 1 : THREE.MathUtils.clamp((time - change.start) / 420, 0, 1);
+      const sweep = change.to > change.from ? Math.sin(Math.PI * progress) * .24 : 0;
+      strengths.set(id, THREE.MathUtils.clamp(THREE.MathUtils.lerp(change.from, change.to, progress) + sweep, 0, 1.2));
+      if (progress === 1) transitions.delete(id);
+    }
+    function strength(id) {
+      const group = id.startsWith('mirror') ? 'mirrors' : id.startsWith('cup') ? 'cups' : id;
+      return Math.max(strengths.get(id) ?? Number(chosen.has(id)), strengths.get(group) ?? Number(chosen.has(group)));
+    }
+    zones.forEach((id,i) => { highlight.value[i+1] = Math.max(strength(id)*.36, hover === id ? .16 : 0); });
+    fleetZones.forEach((id,i) => { fleetHighlight.value[i+1] = Math.max(strength(id)*.46, hover === id ? .20 : 0); });
     for (const mesh of pickable) {
       const id = mesh.userData.part;
       if (!id || !mesh.material.userData.base) continue;
-      const active = chosen.has(id) || (id.startsWith('cup') && chosen.has('cups')) ||
-        (id.startsWith('mirror') && chosen.has('mirrors'));
-      mesh.material.color.copy(mesh.material.userData.base).lerp(tint,active ? .48 : hover === id ? .22 : 0);
+      mesh.material.color.copy(mesh.material.userData.base).lerp(tint, Math.max(strength(id)*.48, hover === id ? .22 : 0));
     }
-    schedule();
   }
   function findPanel(event) {
     const bounds = canvas.getBoundingClientRect();
@@ -311,7 +333,7 @@ function createViewer(host, gltf, callbacks, options) {
     if (id === hover) return;
     hover = id;
     callbacks.inspect(id);
-    highlightPanels();
+    schedule();
   }
   on(canvas,'pointerdown',event => {
     if (!event.isPrimary || event.button !== 0) return;
@@ -370,6 +392,7 @@ function createViewer(host, gltf, callbacks, options) {
     turn(event.key === 'ArrowLeft' ? -1 : 1);
   });
   host.querySelectorAll('[data-paint]').forEach(button => on(button,'click',() => {
+    finishStart = null;
     const color = new THREE.Color(button.dataset.paint);
     paint.color.copy(color);
     genericPaint.color.copy(color);
@@ -382,8 +405,20 @@ function createViewer(host, gltf, callbacks, options) {
   return {
     host,
     sync(ids) {
-      chosen = new Set(ids);
-      highlightPanels();
+      const next = new Set(ids);
+      const now = performance.now();
+      let index = 0;
+      for (const id of new Set([...next, ...chosen])) {
+        const from = Number(chosen.has(id));
+        const to = Number(next.has(id));
+        if (from === to) continue;
+        const change = transitions.get(id);
+        const progress = change ? THREE.MathUtils.clamp((now - change.start) / 420, 0, 1) : 1;
+        const current = change ? THREE.MathUtils.lerp(change.from, change.to, progress) : from;
+        transitions.set(id, {from:current, to, start:now + (to ? Math.min(index++, 8) * 85 : 0)});
+      }
+      chosen = next;
+      schedule();
     },
     dispose() {
       controller.abort();

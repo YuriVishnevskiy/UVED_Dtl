@@ -1,36 +1,57 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-type="service">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="UVED — автомобильная оклейка в Санкт-Петербурге. Рассчитайте стоимость оклейки по деталям и сравните работу у мастера и с выездом.">
+<meta name="page-type" content="service">
+<meta name="site-kind" content="other">
+<meta name="theme-color" content="#e8edf3">
 <title>UVED — оклейка автомобилей в Санкт-Петербурге</title>
 <link rel="stylesheet" href="style.css">
 <script defer src="pricing.js"></script>
 <script defer src="visuals.js"></script>
+<script defer src="catalog.js"></script>
 <script defer src="app.js"></script>
+<script defer src="motion.js"></script>
+<script defer src="film-palette.js"></script>
+<script defer src="film-preview.js"></script>
+<link rel="stylesheet" href="showroom-design.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Перейти к содержимому</a>
 <header><div class="wrap nav">
 <a class="logo" href="#" aria-label="UVED — главная">UV<span>E</span>D<i></i></a>
-<nav aria-label="Навигация"><a href="#services">Услуги</a><a href="#calculator">3D-расчёт</a><a href="#works">Работы</a><a href="#contacts">Контакты</a></nav>
-<a class="phone" href="tel:+792219159577">+7 922 191-59-577</a>
+<nav id="site-navigation" aria-label="Навигация"><a href="#services">Услуги</a><a href="#calculator">Калькулятор</a><a href="#works">Работы</a><a href="#process">Как это работает</a><a href="#faq">FAQ</a><a href="#contacts">Контакты</a></nav>
+<a class="nav-quote" href="#calculator">Рассчитать стоимость</a>
+<button type="button" class="nav-toggle" aria-controls="site-navigation" aria-expanded="false">Меню</button>
 </div></header>
-<main>
-<section class="hero">
-<div class="hero-image" role="img" aria-label="Серебристый кроссовер в графитовой студии"></div>
-<div class="wrap hero-content">
-<p class="eyebrow"><span></span> АВТОМОБИЛЬНАЯ ОКЛЕЙКА · САНКТ-ПЕТЕРБУРГ</p>
-<h1>Профессиональная оклейка автомобилей <em>в Санкт-Петербурге</em></h1>
-<p class="intro">Защитные, прозрачные, цветные, матовые и сатиновые плёнки. Работа у мастера или с выездом.</p>
-<div class="actions"><a class="button primary" href="#calculator">Рассчитать стоимость <b aria-hidden="true">↗</b></a><button class="button" data-book>Записаться</button></div>
-<p class="hint">Предварительный расчёт за несколько минут</p>
+<main id="main-content" tabindex="-1">
+<section class="hero" data-enter aria-labelledby="hero-title">
+<div class="hero-image" role="img" aria-label="Серебристый кроссовер в студии">
+  <video class="studio-video" data-video="media/studio.mp4" poster="hero-slate.jpg" muted loop playsinline preload="none" aria-hidden="true"></video>
+  <span class="hood-light" aria-hidden="true"></span>
+  <span class="intro-film" aria-hidden="true"></span>
 </div>
+<div class="wrap hero-content">
+  <p class="hero-location">Санкт-Петербург</p>
+  <h1 id="hero-title">Оклейка автомобилей <span>нового уровня</span></h1>
+  <p class="intro">Рассчитайте стоимость, выберите нужные зоны и запишитесь онлайн</p>
+  <div class="actions"><a class="button primary" href="#calculator">Рассчитать стоимость <b aria-hidden="true">↗</b></a><button type="button" class="button" data-book>Записаться</button></div>
+</div>
+<span class="intro-wordmark" aria-hidden="true">UVED.</span>
+<button type="button" class="intro-skip" hidden>Пропустить</button>
+<a class="hero-scroll" href="#services">К услугам <span aria-hidden="true">↓</span></a>
+<button class="motion-control" type="button" id="motion-control" aria-pressed="false" hidden>Пауза видео</button>
 </section>
-<div class="benefits"><div class="wrap benefit-grid">
-<div><i aria-hidden="true">↗</i>Расчёт стоимости онлайн</div><div><i aria-hidden="true">⊞</i>Работа по отдельным элементам</div><div><i aria-hidden="true">◇</i>Полная оклейка</div><div><i aria-hidden="true">⌂</i>Выезд по Санкт-Петербургу</div>
-</div></div>
-<section class="wrap section" id="services"><h2>Услуги</h2><div class="services service-cards"><article><img loading="lazy" src="cars/gle-new-frontLeft.jpg" alt=""><div class="service-copy"><h3>Прозрачная защитная плёнка</h3><p>Сохраните цвет кузова и защитите лакокрасочное покрытие.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
+<section class="wrap section service-story" id="services" aria-labelledby="service-title">
+  <div class="service-story-copy">
+    <h2 id="service-title">Плёнка для вашего кузова</h2>
+    <p>Выберите покрытие или деталь, чтобы сразу перейти к расчёту.</p>
+    <nav class="service-index" aria-label="Виды оклейки"></nav>
+  </div>
+  <div class="services service-cards">
+<article><img loading="lazy" src="cars/gle-new-frontLeft.jpg" alt=""><div class="service-copy"><h3>Прозрачная защитная плёнка</h3><p>Сохраните цвет кузова и защитите лакокрасочное покрытие.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
 <article><img loading="lazy" src="cars/q5-frontLeft.jpg" alt=""><div class="service-copy"><h3>Цветная плёнка</h3><p>Подберите новый оттенок для кузова или отдельных деталей.</p><a class="text-action" href="#calculator" data-service-film="color" data-service-kit="">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
 <article><img loading="lazy" src="cars/g45-left.jpg" alt=""><div class="service-copy"><h3>Матовая плёнка</h3><p>Ровная матовая поверхность с приглушёнными бликами.</p><a class="text-action" href="#calculator" data-service-film="matte" data-service-kit="">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
 <article><img loading="lazy" src="cars/rav-left.jpg" alt=""><div class="service-copy"><h3>Сатиновая плёнка</h3><p>Мягкие отражения и сдержанный блеск.</p><a class="text-action" href="#calculator" data-service-film="satin" data-service-kit="">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
@@ -42,9 +63,34 @@
 <article><img loading="lazy" src="cars/g45-interiorLeft.jpg" alt=""><div class="service-copy"><h3>Защита порогов</h3><p>Оклейка наружных порогов и внутренних зон посадки.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Все внутренние пороги">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
 <article><img loading="lazy" src="cars/g05-left.jpg" alt=""><div class="service-copy"><h3>Защита зон под ручками</h3><p>Плёнка на участках, которых часто касаются при открывании дверей.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Все зоны под ручками">Рассчитать <span aria-hidden="true">↗</span></a></div></article><article><img loading="lazy" src="cars/g05-interiorRight.jpg" alt=""><div class="service-copy"><h3>Отдельные элементы</h3><p>Выберите конкретную зону, которую хотите защитить.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="">Рассчитать <span aria-hidden="true">↗</span></a></div></article>
 </div></section>
-<section class="wrap section" id="calculator">
+<section class="wrap section process-story" id="process" aria-labelledby="process-title">
+  <h2 id="process-title">Как проходит оклейка</h2>
+  <div class="process-layout">
+    <div class="film-stage" data-phase="0">
+      <img src="hero-slate.jpg" width="1536" height="1024" alt="Серебристый кузов под студийным светом" loading="lazy">
+      <div class="film-layer" aria-hidden="true"></div>
+      <div class="film-edge" aria-hidden="true"></div>
+      <div class="film-texture" aria-hidden="true"></div>
+    </div>
+    <ol class="process process-chapters">
+      <li><h3>Выбор автомобиля</h3><p>Укажите марку, модель и год выпуска.</p></li>
+      <li><h3>Выбор зоны</h3><p>Отметьте детали кузова, которые хотите защитить.</p></li>
+      <li><h3>Подготовка поверхности</h3><p>Мастер очищает поверхность и готовит её к нанесению.</p></li>
+      <li><h3>Нанесение плёнки</h3><p>Прозрачный слой постепенно ложится на кузов.</p></li>
+      <li><h3>Разглаживание</h3><p>Ракель вытесняет влагу и воздух к краю плёнки.</p></li>
+      <li><h3>Готовый результат</h3><p>Плёнка повторяет форму детали. Рассчитайте стоимость для своего автомобиля.</p><a class="button primary" href="#calculator">Рассчитать стоимость</a></li>
+    </ol>
+  </div>
+</section>
+<section class="wrap showroom-intro" aria-labelledby="showroom-intro-title">
+  <div class="showroom-intro-copy">
+    <h2 id="showroom-intro-title">От кузова к цене</h2>
+    <p>Отметьте детали на автомобиле и сравните стоимость у мастера и с выездом.</p>
+  </div>
+</section>
+<section class="wrap section" id="calculator" tabindex="-1" aria-labelledby="calculator-title">
 <p class="eyebrow"><span></span> КОНФИГУРАТОР UVED</p>
-<h2>Рассчитайте стоимость</h2>
+<h2 id="calculator-title">Рассчитайте стоимость</h2>
 <p class="muted">Подберите плёнку, отметьте детали и сравните форматы работы.</p>
 <div class="config">
 <div class="wizard">
@@ -64,38 +110,107 @@
 <label>Марка автомобиля<input name="brand" list="brands" placeholder="Начните вводить марку" required><datalist id="brands"></datalist></label>
 <label>Модель автомобиля<input name="model" list="models" placeholder="Сначала выберите марку" required disabled><datalist id="models"></datalist></label>
 <label>Год выпуска<select name="year" required disabled></select></label>
-<label id="body-variant" hidden>Версия кузова<select name="variant"></select></label>
+<label id="body-variant" hidden>Поколение или версия кузова<select name="variant"></select></label>
 <label id="custom-model" hidden>Введите модель<input name="custom" placeholder="Название модели"></label>
 </div>
 <button class="button primary next" type="submit">Выбрать плёнку <b aria-hidden="true">→</b></button></div></div>
 </form>
-<div class="panel" id="film-panel" hidden><h3>Тип плёнки</h3><div class="choices" id="films"></div><div class="actions next"><button class="button" data-step="0">Назад</button><button class="button primary" data-step="2">Выбрать детали <b aria-hidden="true">→</b></button></div></div>
+<div class="panel" id="film-panel" hidden><h3>Тип плёнки</h3><div class="choices" id="films"></div><div class="film-sample" data-finish="clear" aria-hidden="true"></div><div class="actions next"><button class="button" data-step="0">Назад</button><button class="button primary" data-step="2">Выбрать детали <b aria-hidden="true">→</b></button></div></div>
 <div class="panel" id="parts-panel" hidden><h3>Детали автомобиля</h3><p class="muted">Нажмите на подсвечиваемую деталь автомобиля или выберите её в списке.</p><div class="chips" id="kits"></div><div class="detail-layout"><div class="diagram"><div class="chips" id="views"></div><div id="car"></div></div><button type="button" class="button parts-mobile-open" id="open-parts-sheet">Список деталей</button><div class="detail-options"><div class="chips selection-actions"><button id="all" type="button">Выбрать весь автомобиль</button><button id="clear" type="button">Сбросить выбор</button></div><div id="part-list"></div></div></div><button class="button next" data-step="1">Назад</button></div>
 </div>
 <aside class="summary">
 <p class="eyebrow"><span></span> ВАШ РАСЧЁТ</p><h3 id="car-name">Автомобиль</h3><p class="muted" id="summary-detail"></p>
 <ul class="line-items" id="line-items"></ul><div class="totals" aria-live="polite"><label class="rate"><span><input type="radio" name="location" value="studio" checked> У мастера</span><strong id="studio">—</strong></label><label class="rate"><span><input type="radio" name="location" value="mobile"> С выездом</span><strong id="mobile">—</strong></label></div>
-<p class="hint">Цены на прозрачную плёнку включают работу и материал. Позиции без тарифа мастер уточнит. Доплата за выезд в демоверсии — <span id="visit-fee"></span>.</p>
+<p class="hint">Цены на прозрачную плёнку включают работу и материал. Позиции без тарифа мастер уточнит. В демоверсии выезд добавляет <span id="visit-fee"></span> к расчёту.</p>
 <button class="button primary" data-book>Записаться <b aria-hidden="true">↗</b></button>
 </aside></div>
 </section>
 
-<section class="wrap section" id="packages"><h2>Популярные комплекты</h2><div class="marketing-grid"><article><h3>Зона риска</h3><p>Участки, которые первыми принимают на себя дорожные загрязнения.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Зона риска">Выбрать ↗</a></article><article><h3>Передняя часть</h3><p>Капот, бампер, крылья, зеркала и передняя оптика.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Передняя часть">Выбрать ↗</a></article><article><h3>Передняя часть расширенная</h3><p>Передняя часть, пороги, стойки и зоны под ручками.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Передняя часть расширенная">Выбрать ↗</a></article><article><h3>Ручки + зоны под ручками</h3><p>Ручки дверей и прилегающие углубления.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Ручки + зоны под ручками">Выбрать ↗</a></article><article><h3>Все внутренние пороги</h3><p>Внутренние зоны посадки.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Все внутренние пороги">Выбрать ↗</a></article><article><h3>Пороги + зоны посадки</h3><p>Пороги и участки вокруг дверных проёмов.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Пороги + зоны посадки">Выбрать ↗</a></article><article><h3>Оптика</h3><p>Передняя и задняя оптика, противотуманные фары.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Оптика">Выбрать ↗</a></article><article><h3>Антихром</h3><p>Хромированные декоративные элементы.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Антихром">Выбрать ↗</a></article><article><h3>Полная защита</h3><p>Основные наружные панели кузова и оптика.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Полная защита">Выбрать ↗</a></article><article><h3>Полная оклейка</h3><p>Основные наружные панели кузова.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Полная оклейка">Выбрать ↗</a></article></div></section>
+<section class="wrap section" id="packages"><h2>Популярные комплекты</h2><div class="marketing-grid"><article><img src="cars/rav-front.jpg" alt="" loading="lazy"><h3>Зона риска</h3><p>Участки, которые первыми принимают на себя дорожные загрязнения.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Зона риска">Выбрать ↗</a></article><article><img src="cars/g05-frontLeft.jpg" alt="" loading="lazy"><h3>Передняя часть</h3><p>Капот, бампер, крылья, зеркала и передняя оптика.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Передняя часть">Выбрать ↗</a></article><article><img src="cars/gle-frontRight.jpg" alt="" loading="lazy"><h3>Передняя часть расширенная</h3><p>Передняя часть, пороги, стойки и зоны под ручками.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Передняя часть расширенная">Выбрать ↗</a></article><article><img src="cars/g45-interiorLeft.jpg" alt="" loading="lazy"><h3>Ручки + зоны под ручками</h3><p>Ручки дверей и прилегающие углубления.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Ручки + зоны под ручками">Выбрать ↗</a></article><article><img src="cars/g05-interiorLeft.jpg" alt="" loading="lazy"><h3>Все внутренние пороги</h3><p>Внутренние зоны посадки.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Все внутренние пороги">Выбрать ↗</a></article><article><img src="cars/g05-interiorRight.jpg" alt="" loading="lazy"><h3>Пороги + зоны посадки</h3><p>Пороги и участки вокруг дверных проёмов.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Пороги + зоны посадки">Выбрать ↗</a></article><article><img src="cars/q5-frontLeft.jpg" alt="" loading="lazy"><h3>Оптика</h3><p>Передняя и задняя оптика, противотуманные фары.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Оптика">Выбрать ↗</a></article><article><img src="cars/q5-rear.jpg" alt="" loading="lazy"><h3>Антихром</h3><p>Хромированные декоративные элементы.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Антихром">Выбрать ↗</a></article><article><img src="cars/gle-front.jpg" alt="" loading="lazy"><h3>Полная защита</h3><p>Основные наружные панели кузова и оптика.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Полная защита">Выбрать ↗</a></article><article><img src="cars/g45-rear.jpg" alt="" loading="lazy"><h3>Полная оклейка</h3><p>Основные наружные панели кузова.</p><a class="text-action" href="#calculator" data-service-film="clear" data-service-kit="Полная оклейка">Выбрать ↗</a></article></div></section>
+<section class="wrap section finish-section" aria-labelledby="finish-title">
+  <div class="finish-copy">
+    <h2 id="finish-title">Примерить плёнку на свой автомобиль</h2>
+    <p class="muted">Выберите плёнку и примерьте её на демонстрационном автомобиле или своём фото. Ползунок покажет исходный и новый цвет.</p>
+    <div class="finish-filters">
+      <label>Бренд <select id="finish-brand"></select></label>
+      <label>Покрытие <select id="finish-kind"><option value="">Все</option><option value="gloss">Глянец</option><option value="matte">Матовая</option><option value="satin">Сатин</option><option value="metallic">Metallic</option><option value="pearl">Pearl</option><option value="shift">Color Shift</option><option value="texture">Texture</option><option value="unknown">Уточняется</option></select></label>
+      <label>Поиск <input id="finish-search" type="search" placeholder="Название или артикул"></label>
+    </div>
+    <fieldset class="finish-palette">
+      <legend>Цвет плёнки</legend>
+      <p id="finish-selected" role="status"></p>
+      <div class="finish-swatches" tabindex="0" aria-label="Образцы плёнки"></div>
+      <p id="finish-count" class="muted" role="status"></p>
+    </fieldset>
+    <p class="muted finish-note">Цвет на экране приблизительный. <a href="https://carlasrussia.ru/ai">Веера Carlas</a> · <a href="https://vse-plenki.ru/tsvetnoy-poliuretan/monstershield">Каталог Monster Shield</a></p>
+  </div>
+  <div class="finish-preview">
+    <div class="finish-photo-controls">
+      <label>Фото своего авто <input type="file" id="finish-upload" accept="image/jpeg,image/png,image/webp"></label>
+      <button id="finish-demo" type="button" hidden>Вернуть демо</button>
+    </div>
+    <p id="finish-photo-status" class="muted" role="status">JPG, PNG или WebP до 20 МБ. Фото отправляется в OpenAI только при нажатии «Примерить».</p>
+    <div class="finish-tools">
+      <button type="button" id="finish-generate" disabled>Примерить</button>
+      <button type="button" id="finish-correct" disabled aria-expanded="false">Исправить область</button>
+    </div>
+    <div id="finish-mask-tools" class="finish-tools" hidden>
+      <label>Кисть <select id="finish-brush"><option value="add">Добавить</option><option value="remove">Убрать</option></select></label>
+      <button type="button" id="finish-undo">Отменить штрих</button>
+      <button type="button" id="finish-reset-mask">Восстановить маску</button>
+    </div>
+    <figure class="finish-compare">
+      <img src="hero-slate.jpg" alt="Серебристый кузов" width="1536" height="1024" loading="lazy">
+      <div class="finish-after" aria-hidden="true">
+        <img class="finish-paint" src="hero-slate.jpg" alt="" width="1536" height="1024" loading="lazy">
+      </div>
+      <span class="finish-label finish-label-before" aria-hidden="true">До</span>
+      <span class="finish-label finish-label-after" aria-hidden="true">После</span>
+      <span class="finish-divider" aria-hidden="true"><span>↔</span></span>
+      <input type="range" min="0" max="100" value="50" name="finish-comparison" aria-label="Граница сравнения покрытий">
+      <canvas id="finish-photo-paint" hidden aria-hidden="true"></canvas>
+      <canvas id="finish-mask-editor" hidden aria-label="Кисть для области кузова"></canvas>
+    </figure>
+    <div class="finish-tools" id="finish-result-tools" hidden>
+      <button type="button" data-finish-view="100">Исходное</button>
+      <button type="button" data-finish-view="50">Сравнить</button>
+      <button type="button" data-finish-view="0">После</button>
+      <button type="button" id="finish-download">Скачать</button>
+      <button type="button" id="finish-quote">Добавить в расчёт</button>
+      <button type="button" id="finish-book">Записаться</button>
+    </div>
+    <div id="finish-history" hidden><h3>Ваши варианты</h3><div class="finish-tools"></div></div>
+  </div>
+</section>
+<section class="wrap section studio-strip" aria-labelledby="studio-title">
+  <h2 id="studio-title">Точная работа с каждой деталью</h2>
+  <div class="studio-grid">
+    <figure><video data-video="media/details.mp4" poster="cars/g05-interiorLeft.jpg" muted loop playsinline preload="none" aria-hidden="true"></video><figcaption>Защита порогов и проёмов</figcaption></figure>
+    <figure><video data-video="media/finish.mp4" poster="cars/gle-rearLeft.jpg" muted loop playsinline preload="none" aria-hidden="true"></video><figcaption>Готовое покрытие</figcaption></figure>
+  </div>
+</section>
 <section class="wrap section" id="works"><div class="section-heading"><div><h2>Наши работы</h2><p class="muted">Демонстрационные изображения для выбора формата оклейки.</p></div><div class="gallery-nav"><button type="button" data-gallery="-1" aria-label="Предыдущие работы">←</button><button type="button" data-gallery="1" aria-label="Следующие работы">→</button></div></div><div class="work-gallery" tabindex="0" aria-label="Примеры оклейки"><figure><img loading="lazy" src="cars/gle-new-frontLeft.jpg" alt="Mercedes-Benz GLE"><figcaption><strong>Mercedes-Benz GLE</strong><span>Защитная плёнка</span><p>Пример защиты передних панелей прозрачной плёнкой.</p></figcaption></figure><figure><img loading="lazy" src="cars/q5-frontLeft.jpg" alt="Audi Q5"><figcaption><strong>Audi Q5</strong><span>Цветная</span><p>Пример смены оттенка кузова цветной плёнкой.</p></figcaption></figure><figure><img loading="lazy" src="cars/g45-left.jpg" alt="BMW X3"><figcaption><strong>BMW X3</strong><span>Матовая</span><p>Матовое покрытие с мягкими бликами на боковинах.</p></figcaption></figure><figure><img loading="lazy" src="cars/rav-frontLeft.jpg" alt="Toyota RAV4"><figcaption><strong>Toyota RAV4</strong><span>Сатиновая</span><p>Сатиновый финиш для спокойного блеска кузова.</p></figcaption></figure><figure><img loading="lazy" src="cars/tiguan-rear.jpg" alt="Volkswagen Tiguan"><figcaption><strong>Volkswagen Tiguan</strong><span>Антихром</span><p>Пример оклейки хромированных элементов задней части.</p></figcaption></figure><figure><img loading="lazy" src="cars/g05-interiorLeft.jpg" alt="BMW X5"><figcaption><strong>BMW X5</strong><span>Отдельные элементы</span><p>Защита дверных проёмов и внутренних порогов.</p></figcaption></figure><figure><img loading="lazy" src="cars/g05-frontLeft.jpg" alt="BMW X5"><figcaption><strong>BMW X5</strong><span>Полная оклейка</span><p>Пример покрытия основных наружных деталей кузова.</p></figcaption></figure></div></section>
 <section class="wrap section" id="why"><h2>Почему UVED</h2><div class="marketing-grid"><article><h3>Расчёт по деталям</h3><p>Вы видите, из каких позиций складывается стоимость.</p></article><article><h3>У мастера или с выездом</h3><p>Сравните форматы обслуживания в одном расчёте.</p></article><article><h3>Подбор под вашу задачу</h3><p>От локальной защиты порогов до оклейки кузова целиком.</p></article></div></section>
-<section class="wrap section" id="process"><h2>Как проходит работа</h2><ol class="process"><li>Выберите автомобиль</li><li>Выберите плёнку</li><li>Отметьте нужные детали</li><li>Получите стоимость</li><li>Запишитесь</li></ol></section>
+
 <section class="wrap section" id="reviews"><h2>Отзывы</h2><p class="muted">Демонстрационные отзывы для макета сайта.</p><div class="marketing-grid review-grid"><article><blockquote>Удобно, что в расчёте видно, какие детали входят в комплект.</blockquote><strong>Анна</strong><p>Toyota RAV4 · Зоны риска</p></article><article><blockquote>Подобрали вариант для передней части кузова и отдельно обсудили пороги.</blockquote><strong>Максим</strong><p>BMW X5 · Прозрачная плёнка</p></article><article><blockquote>Можно было выбрать только фары и сразу увидеть предварительную сумму.</blockquote><strong>Илья</strong><p>Audi Q5 · Защита оптики</p></article><article><blockquote>Понравилось, что можно сравнить работу у мастера и выезд.</blockquote><strong>Елена</strong><p>Volkswagen Tiguan · Частичная оклейка</p></article></div></section>
 <section class="wrap section" id="faq"><h2>Частые вопросы</h2><div class="faq"><details><summary>Сколько занимает оклейка?</summary><p>Время зависит от количества деталей, плёнки и подготовки кузова. Мастер уточнит длительность при согласовании записи.</p></details><details><summary>Можно ли оклеить одну деталь?</summary><p>Да. Выберите нужную деталь в калькуляторе или укажите её в заявке.</p></details><details><summary>Можно ли вызвать мастера?</summary><p>Да, выезд доступен по Санкт-Петербургу. В заявке укажите район и адрес.</p></details><details><summary>От чего зависит стоимость?</summary><p>От плёнки, набора деталей и формата обслуживания. Для некоторых позиций мастер уточняет цену после осмотра.</p></details><details><summary>Насколько точна цена калькулятора?</summary><p>Это предварительный расчёт по имеющемуся прайсу. Итог согласуется до начала работ.</p></details><details><summary>Можно ли защитить только пороги?</summary><p>Да. В калькуляторе есть отдельный раздел порогов и проёмов.</p></details><details><summary>Можно ли оклеить зоны под ручками?</summary><p>Да. Можно выбрать отдельную зону или комплект.</p></details><details><summary>Можно ли изменить выбор после расчёта?</summary><p>Да. Добавляйте и убирайте детали, чтобы сразу увидеть новую сумму.</p></details></div></section>
-<section class="wrap section" id="contacts"><div class="contact">
-<div><p class="eyebrow"><span></span> САНКТ-ПЕТЕРБУРГ</p><h2>Запись на оклейку</h2><p class="muted">Юрий Вишневский · у мастера или с выездом</p></div>
-<div class="contact-links"><a href="tel:+792219159577">+7 922 191-59-577</a><button class="button primary" data-book>Оставить заявку <b aria-hidden="true">↗</b></button></div>
-</div></section>
-<section class="wrap section final-cta"><h2>Рассчитайте оклейку вашего автомобиля</h2><div class="actions"><a class="button primary" href="#calculator">Рассчитать стоимость</a><button class="button" data-book>Записаться</button></div></section>
+<section class="wrap section" id="contacts">
+  <div class="contact contact-finale">
+    <img src="cars/gle-rearRight.jpg" alt="" loading="lazy">
+    <div>
+      <h2>Готовы рассчитать стоимость?</h2>
+      <p>Юрий Вишневский · Санкт-Петербург</p>
+      <div class="actions"><a class="button primary" href="#calculator">Открыть калькулятор</a><a class="button" href="tel:+792219159577">Позвонить</a></div>
+      <a class="final-phone" href="tel:+792219159577">+7 922 191-59-577</a>
+    </div>
+  </div>
+</section>
 </main>
 <div class="mobile-quote" id="mobile-quote" hidden><div><small>У мастера / с выездом</small><strong id="mobile-quote-total"></strong></div><button class="button primary" data-book>Записаться</button></div>
+<div class="mobile-start"><a class="button primary" href="#calculator">Рассчитать стоимость</a></div>
 <footer><div class="wrap footer"><a class="logo" href="#">UV<span>E</span>D<i></i></a><p>Автомобильная оклейка · Санкт-Петербург</p><a href="#">Наверх ↑</a></div></footer>
 <dialog id="parts-sheet" aria-labelledby="parts-sheet-title"><button type="button" class="close" id="close-parts-sheet" aria-label="Закрыть список">×</button><h3 id="parts-sheet-title">Список деталей</h3></dialog>
-<dialog id="booking">
+<dialog id="booking" aria-label="Заявка на оклейку">
 <form id="request">
 <button class="close" type="button" aria-label="Закрыть">×</button>
 <h3>Заявка на оклейку</h3><p class="muted" id="request-summary"></p>

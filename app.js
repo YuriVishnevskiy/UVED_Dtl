@@ -8,6 +8,7 @@ const currency = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: '
 const selected = new Set();
 const manual = 'Моей модели нет в списке';
 let film = 0;
+let wrapSelection;
 let step = 0;
 let view = 'frontLeft';
 let draft;
@@ -16,30 +17,28 @@ find('#brands').replaceChildren(...[...Object.keys(vehicles).sort(), otherBrand]
 const brandName = () => Object.keys(vehicles).find(brand => brand.toLowerCase() === fields.brand.value.trim().toLowerCase());
 const currentYear = new Date().getFullYear();
 let modelKey;
-function matchingVisuals() {
-  const model = chosenVehicle();
+function matchingGenerations() {
   const year = Number(fields.year.value);
-  return visualModels.filter(item => item.brand === model?.brand && item.model === model.model && year >= item.from && year <= item.to);
+  const matches = chosenVehicle()?.generations.filter(row => year >= row.yearFrom && year <= row.yearTo) ?? [];
+  const specific = matches.filter(row => row.generation);
+  return specific.length ? specific : matches;
+}
+function currentGeneration() {
+  const matches = matchingGenerations();
+  return matches.length === 1 ? matches[0] : matches[Number(fields.variant.value) - 1];
 }
 function currentVisual() {
-  const matches = matchingVisuals();
-  return matches.length === 1 ? matches[0] : matches.find(item => item.visualModel === fields.variant.value);
+  return currentGeneration()?.visual;
 }
 function showroomVehicle() {
-  const exact = currentVisual();
-  if (exact?.showroom) return exact;
   const model = chosenVehicle();
-  if (!fields.year.value || !model) return null;
-  if (model.vehicleClass === 'crossover') {
-    return {...model, modelKey:'bmw-x5-g05', fallback:true, base:'BMW X5 G05'};
-  }
-  if (model.vehicleClass === 'suvCoupe') {
-    return {...model, modelKey:'bmw-x6-f96', fallback:true, base:'BMW X6 M F96'};
-  }
-  if (model.vehicleClass === 'coupe') {
-    return {...model, modelKey:'bmw-m4', fallback:true, base:'BMW M4 G82'};
-  }
-  return null;
+  if (!fields.year.value || !model || (fields.variant.required && !fields.variant.value)) return null;
+  const generation = currentGeneration();
+  if (generation?.exact3DAsset) return generation.visual;
+  // Model-specific imagery remains available when there is no exact 3D asset.
+  if (generation?.visual) return null;
+  const fallback = classAssets[model.vehicleClass];
+  return fallback ? {...model, modelKey:fallback.key, fallback:true, base:fallback.label} : null;
 }
 function updateYearOptions(custom) {
   const model = chosenVehicle();
@@ -47,27 +46,35 @@ function updateYearOptions(custom) {
   if (key === modelKey) return;
   modelKey = key;
   fields.year.disabled = !key;
-  const startYear = model?.model === 'M4 Competition' ? 2021 : model?.brand === 'BMW' && model.model === 'X5' ? 1999 : 1950;
-  fields.year.replaceChildren(new Option('Выберите год', ''), ...Array.from({length: currentYear - startYear + 1}, (_, i) => new Option(currentYear - i)));
+  const years = new Set();
+  const spans = model?.generations.filter(row => !row.visualOnly) ?? [];
+  for (const {yearFrom, yearTo} of spans) {
+    for (let year = yearFrom; year <= yearTo; year++) years.add(year);
+  }
+  if (key && !years.size) {
+    for (let year = currentYear; year >= 1950; year--) years.add(year);
+  }
+  fields.year.replaceChildren(new Option('Выберите год', ''), ...[...years].sort((a,b) => b-a).map(year => new Option(year)));
   view = 'frontLeft';
   updateVariants();
 }
 function updateVariants() {
-  const matches = matchingVisuals();
+  const matches = matchingGenerations();
   const ambiguous = matches.length > 1;
   find('#body-variant').hidden = !ambiguous;
   fields.variant.required = ambiguous;
-  fields.variant.replaceChildren(new Option('Уточните версию', ''), ...matches.map(item => new Option(item.bodyVariant, item.visualModel)));
+  fields.variant.replaceChildren(new Option('Уточните версию', ''), ...matches.map((row, index) =>
+    new Option(row.visual?.bodyVariant ?? row.generation ?? 'Поколение не уточнено', String(index + 1))));
 }
 function chosenVehicle() {
   return vehicles[brandName()]?.find(item => item.model.toLowerCase() === fields.model.value.trim().toLowerCase());
 }
 function vehicleName() {
   const model = fields.model.value === manual ? fields.custom.value.trim() : fields.model.value.trim();
-  return [brandName() || fields.brand.value.trim(), model, fields.year.value].filter(Boolean).join(' ');
+  return [brandName() || fields.brand.value.trim(), model, fields.year.value, currentGeneration()?.generation].filter(Boolean).join(' ');
 }
 function partPrice(id) {
-  const value = pricingTable[currentVisual()?.priceGroup ?? chosenVehicle()?.priceGroup]?.[id]?.[filmTypes[film][0]];
+  const value = pricingTable[currentGeneration()?.priceGroup ?? chosenVehicle()?.priceGroup]?.[id]?.[filmTypes[film][0]];
   return Number.isFinite(value) && value >= 0 ? value : null;
 }
 function quoteLines() {
@@ -95,7 +102,7 @@ function displayPrice(location) {
 }
 function updateSummary() {
   find('#car-name').textContent = vehicleName() || 'Автомобиль';
-  find('#summary-detail').textContent = filmTypes[film][1] + ' · ' + (selected.size ? 'Выбрано деталей: ' + selected.size : 'Детали не выбраны');
+  find('#summary-detail').textContent = (wrapSelection?.label ?? filmTypes[film][1]) + ' · ' + (selected.size ? 'Выбрано деталей: ' + selected.size : 'Детали не выбраны');
   for (const location of ['studio', 'mobile']) find('#' + location).textContent = displayPrice(location);
   find('#mobile-quote').hidden = !selected.size;
   find('#mobile-quote-total').textContent = displayPrice('studio') + ' / ' + displayPrice('mobile');
@@ -173,7 +180,9 @@ find('#films').innerHTML = filmTypes.map(([, name, info], index) =>
   `<button type="button" class="choice" data-film="${index}" aria-pressed="${index === film}"><strong>${name}</strong><small>${info}</small></button>`
 ).join('');
 findAll('[data-film]').forEach(button => button.addEventListener('click', () => {
+  wrapSelection = null;
   film = Number(button.dataset.film);
+  find('.film-sample').dataset.finish = filmTypes[film][0];
   findAll('[data-film]').forEach(choice => choice.setAttribute('aria-pressed', choice === button));
   drawCar();
   updateSummary();
@@ -213,13 +222,17 @@ function showZone(id) {
   if (preview) {
     const inner = id && /^(innerSill|entry|aperture|sillsIn)/.test(id);
     const views = currentVisual()?.views;
-    const image = inner && views?.[id.endsWith('R') ? 'interiorRight' : 'interiorLeft']?.image;
+    const detail = id && /^(cup|roofStrip|edge|end|doorEdge|loading)/.test(id);
+    const frame = inner ? (id.endsWith('R') ? 'interiorRight' : 'interiorLeft')
+      : /^(loading)/.test(id) ? 'rear' : id?.endsWith('R') ? 'right' : 'left';
+    const image = (inner || detail) && views?.[frame]?.image;
     preview.hidden = !image;
     preview.replaceChildren();
     if (image) {
       const photo = new Image();
       photo.src = image;
-      photo.alt = 'Дверные проёмы выбранного автомобиля';
+      photo.alt = 'Ракурс для зоны «' + parts.get(id)[1] + '»';
+      preview.classList.toggle('detail-applied', selected.has(id));
       preview.append(photo);
     }
   }
@@ -328,7 +341,7 @@ function drawShowroom(visual) {
       selected: () => selected,
       select: togglePart,
       inspect: showZone
-    },{modelKey:visual.modelKey, label:vehicleName(), active:() => step === 2});
+    },{modelKey:visual.modelKey, label:vehicleName(), finish:filmTypes[film][0], active:() => step === 2});
   }).catch(() => {
     if (host.isConnected) find('.showroom-status',host).textContent = '3D-модель доступна при открытии сайта через сервер.';
   });
@@ -482,12 +495,13 @@ function selectParts(ids) {
 find('#kits').innerHTML = Object.keys(packages).map(name => `<button type="button" data-kit="${name}" title="${packages[name].map(id => parts.get(id)[1]).join(', ')}">${name}</button>`).join('');
 findAll('[data-kit]').forEach(button => button.addEventListener('click', () => selectParts(packages[button.dataset.kit])));
 const partGroups = [
-  ['Кузов', /^(?:hood$|bumper[FR]$|fender[FR][LR]$|door[FR][LR]$|roof$|trunk$|tailgate$|mirror)/],
-  ['Зоны риска', /^(?:hood|roofStrip|roofFront|bumper|loading|fenderStrips)/],
-  ['Пороги и проёмы', /^(?:sill|innerSill|sills|entry|aperture)/],
+  ['Передняя часть', /^(?:hood|bumperF$|bumperCenter|bumperSide|fenderF|fenderStrips|grille|trimF)/],
+  ['Боковые элементы', /^(?:fenderR|rearFender|door[FR][LR]$|doorLower|mirror|pillar|windshieldPillars|fuel|arch)/],
+  ['Пороги и проёмы', /^(?:sill|innerSill|entry|aperture)/],
   ['Ручки и кромки', /^(?:handle|cup|edge|end|innerDoor|doorEdge)/],
+  ['Крыша', /^(?:roof|panorama)/],
   ['Оптика', /^(?:light|fog)/],
-  ['Дополнительные элементы', /./]
+  ['Дополнительно', /./]
 ];
 const groupedParts = new Map(partGroups.map(([label]) => [label, []]));
 for (const part of carParts) {
@@ -587,13 +601,29 @@ partsSheet.addEventListener('close', () => {
   mobilePartsButton.focus({preventScroll:true});
 });
 
+document.addEventListener('uved:wrap-selection', ({detail}) => {
+  const {film: swatch, vehicleImage, selectedParts, book} = detail;
+  const pricingFinish = ['matte', 'satin'].includes(swatch.finish) ? swatch.finish : 'color';
+  const index = filmTypes.findIndex(([id]) => id === pricingFinish);
+  find('[data-film="' + index + '"]').click();
+  wrapSelection = {
+    label: [swatch.brand, swatch.name].join(' · '),
+    brand: swatch.brand, filmName: swatch.name, filmCode: swatch.code,
+    finish: swatch.finish, selectedColor: swatch.hex, uploadedVehicleImage: vehicleImage, selectedParts
+  };
+  updateSummary();
+  changeStep(vehicle.checkValidity() ? 2 : 0, false);
+  location.hash = '#calculator';
+  if (book) find('#calculator [data-book]').click();
+});
+
 const dialog = find('#booking');
 const request = find('#request');
 const confirmation = find('#confirmation');
 function bookingInfo() {
   const location = find('input[name="location"]:checked').value;
   const quote = selected.size ? displayPrice(location) : 'Расчёт не выполнен';
-  return [vehicleName(), currentVisual()?.bodyVariant, filmTypes[film][1], location === 'studio' ? 'У мастера' : 'С выездом', quote].filter(Boolean).join(' · ');
+  return [vehicleName(), currentVisual()?.bodyVariant, wrapSelection?.label ?? filmTypes[film][1], location === 'studio' ? 'У мастера' : 'С выездом', quote].filter(Boolean).join(' · ');
 }
 const bookingParts = () => quoteLines().map(({label,value}) => label + ' — ' + (value === null ? 'Цена по запросу' : currency.format(value)));
 findAll('[data-book]').forEach(button => button.addEventListener('click', () => {
